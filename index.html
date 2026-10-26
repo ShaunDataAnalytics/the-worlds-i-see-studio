@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>我看见的世界 — Audiobook Studio</title>
+  
+  <!-- Apple Web App & iOS PWA Settings -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="我看见的世界">
+  <meta name="theme-color" content="#090d16">
+  <link rel="manifest" href="manifest.webmanifest">
+  
+  <!-- iOS App Icon (Dynamic SVG Icon) -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20512%20512%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27g%27%20x1%3D%270%25%27%20y1%3D%270%25%27%20x2%3D%27100%25%27%20y2%3D%27100%25%27%3E%3Cstop%20offset%3D%270%25%27%20stop-color%3D%27%236366f1%27/%3E%3Cstop%20offset%3D%27100%25%27%20stop-color%3D%27%230284c7%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%27512%27%20height%3D%27512%27%20rx%3D%27112%27%20fill%3D%27url%28%2523g%29%27/%3E%3Ccircle%20cx%3D%27256%27%20cy%3D%27256%27%20r%3D%27140%27%20fill%3D%27rgba%28255%2C255%2C255%2C0.15%29%27/%3E%3Ctext%20x%3D%27256%27%20y%3D%27330%27%20font-size%3D%27220%27%20text-anchor%3D%27middle%27%20fill%3D%27%2523ffffff%27%3E%F0%9F%94%AD%3C/text%3E%3C/svg%3E">
+
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(18, 25, 44, 0.82);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --glass-bg: rgba(15, 21, 37, 0.78);
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-glow: rgba(99, 102, 241, 0.28);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --success: #10b981;
+      --text-main: #f8fafc;
+      --text-body: #cbd5e1;
+      --text-muted: #94a3b8;
+      --safe-t: env(safe-area-inset-top, 20px);
+      --safe-b: env(safe-area-inset-bottom, 24px);
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.16) 0px, transparent 50%),
+        radial-gradient(at 100% 20%, rgba(56, 189, 248, 0.14) 0px, transparent 45%);
+      color: var(--text-body);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Fixed iOS Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding-top: calc(var(--safe-t) + 6px);
+      padding-bottom: 12px;
+      padding-left: 20px;
+      padding-right: 20px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-info { display: flex; align-items: center; gap: 12px; }
+    .app-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 4px 12px var(--primary-glow);
+      flex-shrink: 0;
+    }
+
+    .header-text h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+    }
+
+    .header-text p {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .speed-badge {
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      background: rgba(99, 102, 241, 0.18);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 20px;
+      color: var(--primary);
+    }
+
+    /* Segmented Navigation */
+    .tab-bar-top {
+      padding: 10px 16px;
+      background: rgba(9, 13, 22, 0.75);
+      position: sticky;
+      top: calc(var(--safe-t) + 60px);
+      z-index: 90;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .segmented-control {
+      display: flex;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 3px;
+      gap: 4px;
+    }
+
+    .seg-btn {
+      flex: 1;
+      padding: 8px 6px;
+      border-radius: 9px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .seg-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 3px 10px var(--primary-glow);
+    }
+
+    main {
+      flex: 1;
+      padding: 16px 18px calc(var(--safe-b) + 120px);
+      max-width: 680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fadeIn 0.25s ease-out; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards */
+    .hero-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .hero-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .hero-subtitle {
+      font-size: 0.82rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .hero-quote {
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.04);
+      border-left: 3px solid var(--primary);
+      border-radius: 0 10px 10px 0;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      font-style: italic;
+    }
+
+    /* Chapter Chips */
+    .chapter-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .chapter-scroll::-webkit-scrollbar { display: none; }
+
+    .chapter-chip {
+      flex-shrink: 0;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .chapter-chip.active {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--primary);
+      color: var(--text-main);
+    }
+
+    /* Teleprompter Stream */
+    .tele-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .tele-item:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      background: rgba(24, 34, 60, 0.9);
+    }
+
+    .tele-item.speaking {
+      border-color: var(--primary);
+      background: rgba(30, 41, 75, 0.95);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.25);
+      transform: scale(1.01);
+    }
+
+    .tele-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .tele-time {
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.12);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .tele-text {
+      font-size: 0.96rem;
+      line-height: 1.68;
+      color: var(--text-body);
+    }
+
+    .tele-item.speaking .tele-text {
+      color: #ffffff;
+      font-weight: 500;
+    }
+
+    /* Floating Bottom Dock */
+    .player-dock {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 120;
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid var(--card-border);
+      padding: 12px 18px calc(var(--safe-b) + 8px);
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .dock-inner { max-width: 680px; margin: 0 auto; }
+
+    .scrub-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .time-badge {
+      font-size: 0.72rem;
+      font-family: ui-monospace, Menlo, monospace;
+      color: var(--text-muted);
+      width: 44px;
+      text-align: center;
+    }
+
+    .scrub-bar {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 5px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.15);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .scrub-bar::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      cursor: pointer;
+    }
+
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .dock-track-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 190px;
+      overflow: hidden;
+    }
+
+    .dock-thumb {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .dock-title-group h4 {
+      font-size: 0.82rem;
+      color: var(--text-main);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .dock-title-group p { font-size: 0.68rem; color: var(--text-muted); }
+
+    .dock-buttons {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .ctrl-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      padding: 6px;
+    }
+
+    .play-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .speed-btn {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+
+    .ios-step-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .ios-step-box h4 {
+      font-size: 0.88rem;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .ios-step-box p {
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: var(--text-body);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-info">
+      <div class="app-icon">🔭</div>
+      <div class="header-text">
+        <h1>我看见的世界</h1>
+        <p><span class="status-dot"></span> 李飞飞 · Speechify Studio</p>
+      </div>
+    </div>
+    <div class="speed-badge" id="speedBadge">1.0x 正常</div>
+  </header>
+
+  <div class="tab-bar-top">
+    <div class="segmented-control">
+      <button class="seg-btn active" onclick="switchTab('player', this)">🎧 播放</button>
+      <button class="seg-btn" onclick="switchTab('chapters', this)">📖 章节</button>
+      <button class="seg-btn" onclick="switchTab('install', this)">📲 安装</button>
+    </div>
+  </div>
+
+  <main>
+    <div id="tab-player" class="tab-panel active">
+      <div class="hero-card">
+        <h2 class="hero-title">我看见的世界</h2>
+        <div class="hero-subtitle">Audiobook & Socratic Studio</div>
+        <div class="hero-quote">“推动人工智能发展的动机究竟是什么？我深信这个目的必须明确——以人为本。”</div>
+      </div>
+
+      <div class="chapter-scroll" id="chipsContainer"></div>
+      <div class="teleprompter-box" id="transcriptStream"></div>
+    </div>
+
+    <div id="tab-chapters" class="tab-panel">
+      <div class="hero-card">
+        <h2 class="hero-title">完整章节索引 (Chapters)</h2>
+        <div class="hero-subtitle">全书无删减离线音频轨道</div>
+      </div>
+      <div id="chapterListContainer"></div>
+    </div>
+
+    <div id="tab-install" class="tab-panel">
+      <div class="hero-card">
+        <h2 class="hero-title">📲 安装到 iPhone 主屏幕</h2>
+        <div class="hero-subtitle">100% 离线运行 · 类似原生 App 体验</div>
+      </div>
+
+      <div class="ios-step-box">
+        <h4>第 1 步 · 在 iPhone Safari 中打开</h4>
+        <p>访问本页面部署的在线链接（如 Netlify 或 GitHub Pages）。</p>
+      </div>
+      <div class="ios-step-box">
+        <h4>第 2 步 · 添加到主屏幕 (Add to Home Screen)</h4>
+        <p>点击 Safari 底部中间的<strong>“分享” (Share) 图标</strong>，向上滑动找到<strong>“添加到主屏幕”</strong>，点击右上角<strong>添加</strong>即可！</p>
+      </div>
+      <div class="ios-step-box">
+        <h4>第 3 步 · 离线缓存支持</h4>
+        <p>内置 Service Worker 自动离线缓存核心代码。随时随地戴上耳机即可畅听。</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Player Dock -->
+  <div class="player-dock">
+    <div class="dock-inner">
+      <div class="scrub-container">
+        <span class="time-badge" id="currTime">00:00</span>
+        <input type="range" class="scrub-bar" id="progressBar" min="0" max="100" value="0" oninput="onScrub(this.value)">
+        <span class="time-badge" id="totalTime">00:00</span>
+      </div>
+
+      <div class="controls-row">
+        <div class="dock-track-info">
+          <div class="dock-thumb">🔭</div>
+          <div class="dock-title-group">
+            <h4 id="nowPlayingTitle">1 5L 我看见的世界：飞飞的人工智能与移民梦</h4>
+            <p>李飞飞</p>
+          </div>
+        </div>
+
+        <div class="dock-buttons">
+          <button class="ctrl-btn speed-btn" onclick="cycleSpeed()" id="speedBtn">1.0x</button>
+          <button class="ctrl-btn" onclick="skip(-15)">↺ 15</button>
+          <button class="ctrl-btn play-circle" onclick="togglePlay()" id="playBtn">▶</button>
+          <button class="ctrl-btn" onclick="skip(15)">15 ↻</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="audioPlayer" preload="metadata">
+    <source src="./audio/1-5L-我看见的世界：飞飞的人工智能与移民梦.m4a" type="audio/mp4">
+  </audio>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(console.warn);
+    }
+
+    const playlist = [
+  {
+    "title": "1 5L 我看见的世界：飞飞的人工智能与移民梦",
+    "src": "./audio/1-5L-我看见的世界：飞飞的人工智能与移民梦.m4a",
+    "duration": "",
+    "description": "我看见的世界 · Chapter 1",
+    "text": "Chapter 1: 1 5L 我看见的世界：飞飞的人工智能与移民梦"
+  }
+];
+    let currentTrackIdx = 0;
+
+    const audio = document.getElementById('audioPlayer');
+    const playBtn = document.getElementById('playBtn');
+    const progressBar = document.getElementById('progressBar');
+    const currTimeElem = document.getElementById('currTime');
+    const totalTimeElem = document.getElementById('totalTime');
+    const nowPlayingTitle = document.getElementById('nowPlayingTitle');
+    const speedBtn = document.getElementById('speedBtn');
+    const speedBadge = document.getElementById('speedBadge');
+    const chipsContainer = document.getElementById('chipsContainer');
+    const transcriptStream = document.getElementById('transcriptStream');
+    const chapterListContainer = document.getElementById('chapterListContainer');
+
+    const speeds = [1.0, 1.25, 1.5, 1.75, 2.0, 0.75];
+    let speedIndex = 0;
+
+    function renderUI() {
+      chipsContainer.innerHTML = '';
+      chapterListContainer.innerHTML = '';
+      transcriptStream.innerHTML = '';
+
+      playlist.forEach((track, idx) => {
+        // Chips
+        const chip = document.createElement('div');
+        chip.className = `chapter-chip ${idx === 0 ? 'active' : ''}`;
+        chip.id = `chip-${idx}`;
+        chip.innerText = track.title;
+        chip.onclick = () => loadTrack(idx, true);
+        chipsContainer.appendChild(chip);
+
+        // List item
+        const card = document.createElement('div');
+        card.className = 'tele-item';
+        card.onclick = () => loadTrack(idx, true);
+        card.innerHTML = `
+          <div class="tele-header">
+            <span class="tele-time">第 ${idx + 1} 轨</span>
+            <span style="font-size:0.7rem; color:var(--text-muted);">${track.duration || ''}</span>
+          </div>
+          <div class="tele-text" style="font-weight:600; color:var(--text-main);">${track.title}</div>
+          <div style="font-size:0.82rem; color:var(--text-muted); margin-top:6px;">${track.description || ''}</div>
+        `;
+        chapterListContainer.appendChild(card);
+
+        // Transcript item
+        const tele = document.createElement('div');
+        tele.className = `tele-item ${idx === 0 ? 'speaking' : ''}`;
+        tele.id = `tele-${idx}`;
+        tele.onclick = () => loadTrack(idx, true);
+        tele.innerHTML = `
+          <div class="tele-header">
+            <span class="tele-time">第 ${idx + 1} 轨 · ${track.title}</span>
+          </div>
+          <div class="tele-text">${track.text || track.description || track.title}</div>
+        `;
+        transcriptStream.appendChild(tele);
+      });
+    }
+
+    renderUI();
+
+    function formatTime(secs) {
+      if (!secs || isNaN(secs)) return '00:00';
+      const m = Math.floor(secs / 60);
+      const s = Math.floor(secs % 60);
+      return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    function loadTrack(idx, autoPlay = false) {
+      currentTrackIdx = idx;
+      const track = playlist[idx];
+      nowPlayingTitle.innerText = track.title;
+      audio.src = track.src;
+      audio.load();
+
+      document.querySelectorAll('.chapter-chip').forEach((c, i) => c.classList.toggle('active', i === idx));
+      document.querySelectorAll('.tele-item').forEach((t, i) => t.classList.toggle('speaking', i === idx));
+
+      const activeTele = document.getElementById(`tele-${idx}`);
+      if (activeTele) activeTele.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      if (autoPlay) {
+        audio.play().then(() => { playBtn.innerText = '⏸'; }).catch(console.warn);
+      }
+    }
+
+    function togglePlay() {
+      if (audio.paused) {
+        audio.play().then(() => { playBtn.innerText = '⏸'; }).catch(console.warn);
+      } else {
+        audio.pause();
+        playBtn.innerText = '▶';
+      }
+    }
+
+    function skip(secs) {
+      audio.currentTime = Math.max(0, Math.min(audio.duration || 9999, audio.currentTime + secs));
+    }
+
+    function onScrub(val) {
+      audio.currentTime = val;
+    }
+
+    function cycleSpeed() {
+      speedIndex = (speedIndex + 1) % speeds.length;
+      const rate = speeds[speedIndex];
+      audio.playbackRate = rate;
+      speedBtn.innerText = `${rate}x`;
+      speedBadge.innerText = `${rate}x 语速`;
+    }
+
+    audio.addEventListener('timeupdate', () => {
+      progressBar.value = audio.currentTime;
+      currTimeElem.innerText = formatTime(audio.currentTime);
+    });
+
+    audio.addEventListener('loadedmetadata', () => {
+      progressBar.max = audio.duration;
+      totalTimeElem.innerText = formatTime(audio.duration);
+    });
+
+    audio.addEventListener('ended', () => {
+      if (currentTrackIdx < playlist.length - 1) {
+        loadTrack(currentTrackIdx + 1, true);
+      } else {
+        playBtn.innerText = '▶';
+        progressBar.value = 0;
+      }
+    });
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+      btn.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
