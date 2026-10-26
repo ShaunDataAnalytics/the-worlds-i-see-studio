@@ -5,692 +5,801 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <title>我看见的世界 — Audiobook Studio</title>
   
-  <!-- Apple Web App & iOS PWA Settings -->
+  <!-- Apple Web App & PWA Settings -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="我看见的世界">
   <meta name="theme-color" content="#090d16">
   <link rel="manifest" href="manifest.webmanifest">
   
-  <!-- iOS App Icon (Dynamic SVG Icon) -->
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20512%20512%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27g%27%20x1%3D%270%25%27%20y1%3D%270%25%27%20x2%3D%27100%25%27%20y2%3D%27100%25%27%3E%3Cstop%20offset%3D%270%25%27%20stop-color%3D%27%236366f1%27/%3E%3Cstop%20offset%3D%27100%25%27%20stop-color%3D%27%230284c7%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%27512%27%20height%3D%27512%27%20rx%3D%27112%27%20fill%3D%27url%28%2523g%29%27/%3E%3Ccircle%20cx%3D%27256%27%20cy%3D%27256%27%20r%3D%27140%27%20fill%3D%27rgba%28255%2C255%2C255%2C0.15%29%27/%3E%3Ctext%20x%3D%27256%27%20y%3D%27330%27%20font-size%3D%27220%27%20text-anchor%3D%27middle%27%20fill%3D%27%2523ffffff%27%3E%F0%9F%94%AD%3C/text%3E%3C/svg%3E">
+  <!-- iOS App Icon (Audiobook Theme) -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236366f1'/%3E%3Cstop offset='100%25' stop-color='%230ea5e9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23g)'/%3E%3Ccircle cx='256' cy='256' r='140' fill='rgba(255,255,255,0.15)'/%3E%3Ctext x='256' y='330' font-size='220' text-anchor='middle' fill='%23ffffff'%3E🔭%3C/text%3E%3C/svg%3E">
 
   <style>
     :root {
       --bg: #090d16;
-      --card-bg: rgba(18, 25, 44, 0.82);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --glass-bg: rgba(15, 21, 37, 0.78);
-      --primary: #6366f1;
-      --primary-hover: #4f46e5;
-      --primary-glow: rgba(99, 102, 241, 0.28);
-      --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.25);
-      --success: #10b981;
+      --card-bg: #131b2e;
+      --card-border: #1f2c47;
       --text-main: #f8fafc;
-      --text-body: #cbd5e1;
       --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --primary: #6366f1;
+      --success: #10b981;
       --safe-t: env(safe-area-inset-top, 20px);
       --safe-b: env(safe-area-inset-bottom, 24px);
-      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --accent: #0284c7;
+      --accent-hover: #0369a1;
+      --accent-glow: rgba(2, 132, 199, 0.2);
+      --primary: #4f46e5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
 
     body {
       background-color: var(--bg);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.16) 0px, transparent 50%),
-        radial-gradient(at 100% 20%, rgba(56, 189, 248, 0.14) 0px, transparent 45%);
-      color: var(--text-body);
+      color: var(--text-main);
       font-family: var(--font-sans);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
+      padding-top: calc(var(--safe-t) + 12px);
+      padding-bottom: calc(var(--safe-b) + 32px);
+      padding-left: 16px;
+      padding-right: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
-    /* Fixed iOS Header */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding-top: calc(var(--safe-t) + 6px);
-      padding-bottom: 12px;
-      padding-left: 20px;
-      padding-right: 20px;
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--card-border);
+    /* Top Bar */
+    .nav-bar {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-    }
-
-    .header-info { display: flex; align-items: center; gap: 12px; }
-    .app-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 11px;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      box-shadow: 0 4px 12px var(--primary-glow);
-      flex-shrink: 0;
+      margin-bottom: 16px;
     }
 
-    .header-text h1 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--text-main);
-      letter-spacing: -0.01em;
-      line-height: 1.25;
-    }
-
-    .header-text p {
-      font-size: 0.74rem;
-      color: var(--text-muted);
-      display: flex;
+    .badge-audio {
+      display: inline-flex;
       align-items: center;
       gap: 6px;
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--success);
-      box-shadow: 0 0 8px var(--success);
-    }
-
-    .speed-badge {
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
       padding: 4px 10px;
-      background: rgba(99, 102, 241, 0.18);
-      border: 1px solid rgba(99, 102, 241, 0.35);
       border-radius: 20px;
-      color: var(--primary);
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.2);
     }
 
-    /* Segmented Navigation */
-    .tab-bar-top {
-      padding: 10px 16px;
-      background: rgba(9, 13, 22, 0.75);
-      position: sticky;
-      top: calc(var(--safe-t) + 60px);
-      z-index: 90;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
-    .segmented-control {
-      display: flex;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 3px;
-      gap: 4px;
-    }
-
-    .seg-btn {
-      flex: 1;
-      padding: 8px 6px;
-      border-radius: 9px;
+    .theme-toggle {
+      background: none;
       border: none;
-      background: transparent;
+      font-size: 1.1rem;
       color: var(--text-muted);
-      font-size: 0.8rem;
-      font-weight: 600;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 4px;
     }
 
-    .seg-btn.active {
-      background: var(--primary);
-      color: #ffffff;
-      box-shadow: 0 3px 10px var(--primary-glow);
-    }
-
-    main {
-      flex: 1;
-      padding: 16px 18px calc(var(--safe-b) + 120px);
-      max-width: 680px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; animation: fadeIn 0.25s ease-out; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Cards */
+    /* Hero Player Card */
     .hero-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 20px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.25);
+      margin-bottom: 22px;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
     }
 
-    .hero-title {
-      font-size: 1.25rem;
+    .album-cover {
+      width: 140px;
+      height: 140px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+      margin: 0 auto 16px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(14, 165, 233, 0.35);
+      position: relative;
+    }
+
+    .album-icon {
+      font-size: 50px;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+    }
+
+    .album-tag {
+      font-size: 0.65rem;
       font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 6px;
-    }
-
-    .hero-subtitle {
-      font-size: 0.82rem;
-      color: var(--accent);
-      font-weight: 500;
-      margin-bottom: 12px;
-    }
-
-    .hero-quote {
-      font-size: 0.88rem;
-      line-height: 1.55;
-      color: #e2e8f0;
-      background: rgba(255, 255, 255, 0.04);
-      border-left: 3px solid var(--primary);
-      border-radius: 0 10px 10px 0;
-      padding: 10px 14px;
-      margin-bottom: 14px;
-      font-style: italic;
-    }
-
-    /* Chapter Chips */
-    .chapter-scroll {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      margin-bottom: 18px;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .chapter-scroll::-webkit-scrollbar { display: none; }
-
-    .chapter-chip {
-      flex-shrink: 0;
-      padding: 8px 14px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      color: var(--text-muted);
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .chapter-chip.active {
-      background: rgba(99, 102, 241, 0.2);
-      border-color: var(--primary);
-      color: var(--text-main);
-    }
-
-    /* Teleprompter Stream */
-    .tele-item {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 16px 18px;
-      margin-bottom: 12px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-    }
-
-    .tele-item:hover {
-      border-color: rgba(99, 102, 241, 0.4);
-      background: rgba(24, 34, 60, 0.9);
-    }
-
-    .tele-item.speaking {
-      border-color: var(--primary);
-      background: rgba(30, 41, 75, 0.95);
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.25);
-      transform: scale(1.01);
-    }
-
-    .tele-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-
-    .tele-time {
-      font-family: ui-monospace, Menlo, monospace;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--accent);
-      background: rgba(56, 189, 248, 0.12);
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: rgba(0,0,0,0.25);
       padding: 2px 8px;
       border-radius: 6px;
+      margin-top: 4px;
     }
 
-    .tele-text {
-      font-size: 0.96rem;
-      line-height: 1.68;
-      color: var(--text-body);
+    .book-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+      letter-spacing: -0.3px;
     }
 
-    .tele-item.speaking .tele-text {
-      color: #ffffff;
-      font-weight: 500;
-    }
-
-    /* Floating Bottom Dock */
-    .player-dock {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 120;
-      background: var(--glass-bg);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-top: 1px solid var(--card-border);
-      padding: 12px 18px calc(var(--safe-b) + 8px);
-      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    .dock-inner { max-width: 680px; margin: 0 auto; }
-
-    .scrub-container {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .time-badge {
-      font-size: 0.72rem;
-      font-family: ui-monospace, Menlo, monospace;
+    .book-author {
+      font-size: 0.8rem;
       color: var(--text-muted);
-      width: 44px;
-      text-align: center;
+      margin-bottom: 16px;
     }
 
-    .scrub-bar {
-      flex: 1;
+    /* Track Display in Hero */
+    .now-playing-box {
+      background: rgba(0,0,0,0.15);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      text-align: left;
+    }
+
+    .now-track-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .now-track-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 2px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .now-track-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    /* Progress & Scrubber */
+    .progress-area {
+      margin-bottom: 16px;
+    }
+
+    .scrubber {
       -webkit-appearance: none;
-      height: 5px;
-      border-radius: 9999px;
-      background: rgba(255, 255, 255, 0.15);
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--card-border);
       outline: none;
       cursor: pointer;
     }
 
-    .scrub-bar::-webkit-slider-thumb {
+    .scrubber::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
-      background: #ffffff;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow);
       cursor: pointer;
     }
 
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      margin-top: 6px;
+    }
+
+    /* Main Player Controls */
     .controls-row {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .dock-track-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      max-width: 190px;
-      overflow: hidden;
-    }
-
-    .dock-thumb {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
-    .dock-title-group h4 {
-      font-size: 0.82rem;
-      color: var(--text-main);
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .dock-title-group p { font-size: 0.68rem; color: var(--text-muted); }
-
-    .dock-buttons {
-      display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 18px;
+      margin-bottom: 16px;
     }
 
-    .ctrl-btn {
-      background: transparent;
+    .btn-control {
+      background: none;
       border: none;
       color: var(--text-main);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.15rem;
-      padding: 6px;
+      transition: transform 0.1s ease, color 0.1s ease;
+    }
+    .btn-control:active { transform: scale(0.92); }
+
+    .btn-skip {
+      font-size: 1.35rem;
+      color: var(--text-muted);
     }
 
-    .play-circle {
-      width: 44px;
-      height: 44px;
+    .btn-play {
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: #ffffff;
+      background: var(--accent);
+      color: #090d16;
+      font-size: 1.8rem;
+      box-shadow: 0 8px 24px var(--accent-glow);
+    }
+    .btn-play:hover { background: var(--accent-hover); }
+
+    /* Extra Tools: Speed & Sleep */
+    .tools-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--card-border);
+      padding-top: 14px;
+      margin-top: 6px;
+    }
+
+    .speed-pills {
+      display: flex;
+      gap: 6px;
+    }
+
+    .pill {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .pill.active {
+      background: var(--accent);
+      color: #090d16;
+      border-color: var(--accent);
+    }
+
+    .sleep-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .sleep-btn.active {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Chapter List */
+    .tracklist-header {
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 4px;
+    }
+
+    .tracklist {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .track-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .track-card:active {
+      transform: scale(0.98);
+    }
+    .track-card.active {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .track-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.06);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.3rem;
-      box-shadow: 0 4px 14px var(--primary-glow);
-    }
-
-    .speed-btn {
-      font-size: 0.76rem;
+      font-size: 0.78rem;
       font-weight: 700;
-      color: var(--accent);
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      padding: 4px 8px;
-      border-radius: 8px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .track-card.active .track-num {
+      background: var(--accent);
+      color: #090d16;
     }
 
-    .ios-step-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 14px;
+    .track-content {
+      flex: 1;
+      min-width: 0;
     }
 
-    .ios-step-box h4 {
+    .track-name {
       font-size: 0.88rem;
-      color: var(--accent);
-      margin-bottom: 6px;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .ios-step-box p {
-      font-size: 0.82rem;
-      line-height: 1.55;
-      color: var(--text-body);
+    .track-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .track-meta {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    /* Equalizer Animation for Active Playing */
+    .eq-bars {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 12px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .eq-bar {
+      width: 2px;
+      background: var(--accent);
+      border-radius: 1px;
+      animation: eq 0.6s infinite ease-in-out alternate;
+    }
+    .eq-bar:nth-child(1) { height: 4px; animation-delay: 0.1s; }
+    .eq-bar:nth-child(2) { height: 10px; animation-delay: 0.25s; }
+    .eq-bar:nth-child(3) { height: 6px; animation-delay: 0.4s; }
+
+    @keyframes eq {
+      from { height: 2px; }
+      to { height: 12px; }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="header-info">
-      <div class="app-icon">🔭</div>
-      <div class="header-text">
-        <h1>我看见的世界</h1>
-        <p><span class="status-dot"></span> 李飞飞 · Speechify Studio</p>
+  <!-- Top Bar -->
+  <div class="nav-bar">
+    <div class="badge-audio">🔭 Neural Audiobook · 13 Chapters</div>
+    <button class="theme-toggle" id="btnTheme" title="Toggle Theme">🌓</button>
+  </div>
+
+  <!-- Hero Player Card -->
+  <div class="hero-card">
+    <div class="album-cover">
+      <div class="album-icon">🔭</div>
+      <div class="album-tag">Audiobook</div>
+    </div>
+
+    <div class="book-title">我看见的世界</div>
+    <div class="book-author">李飞飞 (Fei-Fei Li) · 深度有声全景</div>
+
+    <!-- Current Playing Details -->
+    <div class="now-playing-box">
+      <div class="now-track-num" id="nowNum">Track 01 of 13</div>
+      <div class="now-track-title" id="nowTitle">全书全景深度导读</div>
+      <div class="now-track-sub" id="nowSub">飞飞的人工智能与移民梦深度全景</div>
+    </div>
+
+    <!-- Scrubber -->
+    <div class="progress-area">
+      <input type="range" class="scrubber" id="progressBar" min="0" max="100" value="0">
+      <div class="time-row">
+        <span id="currentTime">00:00</span>
+        <span id="totalDuration">--:--</span>
       </div>
     </div>
-    <div class="speed-badge" id="speedBadge">1.0x 正常</div>
-  </header>
 
-  <div class="tab-bar-top">
-    <div class="segmented-control">
-      <button class="seg-btn active" onclick="switchTab('player', this)">🎧 播放</button>
-      <button class="seg-btn" onclick="switchTab('chapters', this)">📖 章节</button>
-      <button class="seg-btn" onclick="switchTab('install', this)">📲 安装</button>
+    <!-- Controls -->
+    <div class="controls-row">
+      <button class="btn-control btn-skip" id="btnPrev" title="上一章">⏮️</button>
+      <button class="btn-control btn-skip" id="btnRewind" title="快退 15 秒">↺ 15</button>
+      <button class="btn-control btn-play" id="btnPlay" title="播放/暂停">▶</button>
+      <button class="btn-control btn-skip" id="btnForward" title="快进 15 秒">15 ↻</button>
+      <button class="btn-control btn-skip" id="btnNext" title="下一章">⏭️</button>
+    </div>
+
+    <!-- Extra Tools -->
+    <div class="tools-row">
+      <div class="speed-pills">
+        <button class="pill" data-speed="0.75">0.75x</button>
+        <button class="pill active" data-speed="1.0">1.0x</button>
+        <button class="pill" data-speed="1.25">1.25x</button>
+        <button class="pill" data-speed="1.5">1.5x</button>
+        <button class="pill" data-speed="2.0">2.0x</button>
+      </div>
+      <button class="sleep-btn" id="btnSleep">⏱️ <span id="sleepText">定时</span></button>
     </div>
   </div>
 
-  <main>
-    <div id="tab-player" class="tab-panel active">
-      <div class="hero-card">
-        <h2 class="hero-title">我看见的世界</h2>
-        <div class="hero-subtitle">Audiobook & Socratic Studio</div>
-        <div class="hero-quote">“推动人工智能发展的动机究竟是什么？我深信这个目的必须明确——以人为本。”</div>
-      </div>
-
-      <div class="chapter-scroll" id="chipsContainer"></div>
-      <div class="teleprompter-box" id="transcriptStream"></div>
-    </div>
-
-    <div id="tab-chapters" class="tab-panel">
-      <div class="hero-card">
-        <h2 class="hero-title">完整章节索引 (Chapters)</h2>
-        <div class="hero-subtitle">全书无删减离线音频轨道</div>
-      </div>
-      <div id="chapterListContainer"></div>
-    </div>
-
-    <div id="tab-install" class="tab-panel">
-      <div class="hero-card">
-        <h2 class="hero-title">📲 安装到 iPhone 主屏幕</h2>
-        <div class="hero-subtitle">100% 离线运行 · 类似原生 App 体验</div>
-      </div>
-
-      <div class="ios-step-box">
-        <h4>第 1 步 · 在 iPhone Safari 中打开</h4>
-        <p>访问本页面部署的在线链接（如 Netlify 或 GitHub Pages）。</p>
-      </div>
-      <div class="ios-step-box">
-        <h4>第 2 步 · 添加到主屏幕 (Add to Home Screen)</h4>
-        <p>点击 Safari 底部中间的<strong>“分享” (Share) 图标</strong>，向上滑动找到<strong>“添加到主屏幕”</strong>，点击右上角<strong>添加</strong>即可！</p>
-      </div>
-      <div class="ios-step-box">
-        <h4>第 3 步 · 离线缓存支持</h4>
-        <p>内置 Service Worker 自动离线缓存核心代码。随时随地戴上耳机即可畅听。</p>
-      </div>
-    </div>
-  </main>
-
-  <!-- Player Dock -->
-  <div class="player-dock">
-    <div class="dock-inner">
-      <div class="scrub-container">
-        <span class="time-badge" id="currTime">00:00</span>
-        <input type="range" class="scrub-bar" id="progressBar" min="0" max="100" value="0" oninput="onScrub(this.value)">
-        <span class="time-badge" id="totalTime">00:00</span>
-      </div>
-
-      <div class="controls-row">
-        <div class="dock-track-info">
-          <div class="dock-thumb">🔭</div>
-          <div class="dock-title-group">
-            <h4 id="nowPlayingTitle">1 5L 我看见的世界：飞飞的人工智能与移民梦</h4>
-            <p>李飞飞</p>
-          </div>
-        </div>
-
-        <div class="dock-buttons">
-          <button class="ctrl-btn speed-btn" onclick="cycleSpeed()" id="speedBtn">1.0x</button>
-          <button class="ctrl-btn" onclick="skip(-15)">↺ 15</button>
-          <button class="ctrl-btn play-circle" onclick="togglePlay()" id="playBtn">▶</button>
-          <button class="ctrl-btn" onclick="skip(15)">15 ↻</button>
-        </div>
-      </div>
-    </div>
+  <!-- Chapters Tracklist -->
+  <div class="tracklist-header">
+    <span>章节列表 (13 轨全书完整版)</span>
+    <span style="font-size:0.72rem; color:var(--accent);">连播已开启</span>
   </div>
 
-  <audio id="audioPlayer" preload="metadata">
-    <source src="./audio/1-5L-我看见的世界：飞飞的人工智能与移民梦.m4a" type="audio/mp4">
-  </audio>
+  <div class="tracklist" id="tracklist"></div>
+
+  <audio id="audio"></audio>
 
   <script>
+    // Register Service Worker for offline PWA
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(console.warn);
     }
 
-    const playlist = [
-  {
-    "title": "1 5L 我看见的世界：飞飞的人工智能与移民梦",
-    "src": "./audio/1-5L-我看见的世界：飞飞的人工智能与移民梦.m4a",
-    "duration": "",
-    "description": "我看见的世界 · Chapter 1",
-    "text": "Chapter 1: 1 5L 我看见的世界：飞飞的人工智能与移民梦"
-  }
-];
+    // 13 Full Chapters Dataset
+    const CHAPTERS = [
+      {
+        id: "00",
+        title: "全书全景深度导读",
+        subtitle: "飞飞的人工智能与移民梦深度全景",
+        file: "audio/00_全书全景深度导读.m4a",
+        duration: "15:42"
+      },
+      {
+        id: "01",
+        title: "第 1 章 · 如坐针毡的华盛顿之行",
+        subtitle: "国会听证会前夜与学者、移民、女儿的三重身份",
+        file: "audio/01_第1章_如坐针毡的华盛顿之行.m4a",
+        duration: "1:45"
+      },
+      {
+        id: "02",
+        title: "第 2 章 · 逐梦之旅：成都星空",
+        subtitle: "10岁辨认北极星与骑跨斗三轮捉水牛的父亲",
+        file: "audio/02_第2章_逐梦之旅_成都星空与叛逆好奇.m4a",
+        duration: "1:55"
+      },
+      {
+        id: "03",
+        title: "第 3 章 · 鸿沟渐窄：帕西帕尼干洗店",
+        subtitle: "一居室厨房折叠床、中餐馆时薪两美元与失语之痛",
+        file: "audio/03_第3章_鸿沟渐窄_帕西帕尼干洗店与失语.m4a",
+        duration: "2:00"
+      },
+      {
+        id: "04",
+        title: "第 4 章 · 心智探索：连接物理学与父爱",
+        subtitle: "顿悟物理学是父亲看待世界的方式，将冰冷科学赋予诗意",
+        file: "audio/04_第4章_心智探索_连接物理学与父亲的爱.m4a",
+        duration: "2:50"
+      },
+      {
+        id: "05",
+        title: "第 5 章 · 第一道光：贝尔实验室",
+        subtitle: "杨立昆与手写邮编识别，从硬编码规则转向神经网络模式发现",
+        file: "audio/05_第5章_第一道光_贝尔实验室与模式识别.m4a",
+        duration: "3:45"
+      },
+      {
+        id: "06",
+        title: "第 6 章 · 北极星：确立终身研究命题",
+        subtitle: "父亲在二手甩卖发现快乐的智慧，技术必须深植于人性土壤",
+        file: "audio/06_第6章_北极星_确立终身研究命题.m4a",
+        duration: "3:27"
+      },
+      {
+        id: "07",
+        title: "第 7 章 · 一个假设：数据杠杆法则",
+        subtitle: "跳出模型层微调内卷，向1500万张图片的本体论寻求数量级扩张",
+        file: "audio/07_第7章_一个假设_数据杠杆破局法则.mp3",
+        duration: "0:41"
+      },
+      {
+        id: "08",
+        title: "第 8 章 · 实验验证：全球众包异步扩容",
+        subtitle: "引入亚马逊Mechanical Turk，将19年标注极限压缩至不到1年",
+        file: "audio/08_第8章_实验验证_众包扩容与击穿资源天花板.mp3",
+        duration: "0:39"
+      },
+      {
+        id: "09",
+        title: "第 9 章 · 万物以外是什么：深度学习引爆",
+        subtitle: "创办ILSVRC挑战赛，AlexNet横空出世拉开AI大爆发序幕",
+        file: "audio/09_第9章_万物以外是什么_ImageNet与深度学习引爆.mp3",
+        duration: "0:38"
+      },
+      {
+        id: "10",
+        title: "第 10 章 · 似易实难：层级对冲决策法则",
+        subtitle: "面对模糊现实输入向上回退决策树，在准确性与安全性间求取稳健平衡",
+        file: "audio/10_第10章_似易实难_不确定性环境下的决策对冲.mp3",
+        duration: "0:38"
+      },
+      {
+        id: "11",
+        title: "第 11 章 · 无人可控：坚守边缘计算伦理",
+        subtitle: "在ICU医疗场景落地AI时放弃云端，用本地计算守护个体尊严与隐私",
+        file: "audio/11_第11章_无人可控_对抗偏见与以人为本的边缘部署.mp3",
+        duration: "0:37"
+      },
+      {
+        id: "12",
+        title: "第 12 章 · 下一颗北极星：以人为本的AI未来",
+        subtitle: "创办AI4ALL与斯坦福HAI，终极动机明确为造福人类福祉",
+        file: "audio/12_第12章_下一颗北极星_普惠未来与人类智慧归宿.mp3",
+        duration: "0:37"
+      }
+    ];
+
     let currentTrackIdx = 0;
+    let isPlaying = false;
+    let currentSpeed = 1.0;
+    let sleepTimerTimeout = null;
+    let sleepTimerMinutes = 0;
 
-    const audio = document.getElementById('audioPlayer');
-    const playBtn = document.getElementById('playBtn');
-    const progressBar = document.getElementById('progressBar');
-    const currTimeElem = document.getElementById('currTime');
-    const totalTimeElem = document.getElementById('totalTime');
-    const nowPlayingTitle = document.getElementById('nowPlayingTitle');
-    const speedBtn = document.getElementById('speedBtn');
-    const speedBadge = document.getElementById('speedBadge');
-    const chipsContainer = document.getElementById('chipsContainer');
-    const transcriptStream = document.getElementById('transcriptStream');
-    const chapterListContainer = document.getElementById('chapterListContainer');
+    const audio = document.getElementById("audio");
+    const btnPlay = document.getElementById("btnPlay");
+    const btnPrev = document.getElementById("btnPrev");
+    const btnNext = document.getElementById("btnNext");
+    const btnRewind = document.getElementById("btnRewind");
+    const btnForward = document.getElementById("btnForward");
+    const progressBar = document.getElementById("progressBar");
+    const currentTimeEl = document.getElementById("currentTime");
+    const totalDurationEl = document.getElementById("totalDuration");
+    const nowNumEl = document.getElementById("nowNum");
+    const nowTitleEl = document.getElementById("nowTitle");
+    const nowSubEl = document.getElementById("nowSub");
+    const tracklistEl = document.getElementById("tracklist");
+    const btnTheme = document.getElementById("btnTheme");
+    const btnSleep = document.getElementById("btnSleep");
+    const sleepText = document.getElementById("sleepText");
 
-    const speeds = [1.0, 1.25, 1.5, 1.75, 2.0, 0.75];
-    let speedIndex = 0;
-
-    function renderUI() {
-      chipsContainer.innerHTML = '';
-      chapterListContainer.innerHTML = '';
-      transcriptStream.innerHTML = '';
-
-      playlist.forEach((track, idx) => {
-        // Chips
-        const chip = document.createElement('div');
-        chip.className = `chapter-chip ${idx === 0 ? 'active' : ''}`;
-        chip.id = `chip-${idx}`;
-        chip.innerText = track.title;
-        chip.onclick = () => loadTrack(idx, true);
-        chipsContainer.appendChild(chip);
-
-        // List item
-        const card = document.createElement('div');
-        card.className = 'tele-item';
-        card.onclick = () => loadTrack(idx, true);
-        card.innerHTML = `
-          <div class="tele-header">
-            <span class="tele-time">第 ${idx + 1} 轨</span>
-            <span style="font-size:0.7rem; color:var(--text-muted);">${track.duration || ''}</span>
+    function renderTracklist() {
+      tracklistEl.innerHTML = CHAPTERS.map((c, i) => `
+        <div class="track-card ${i === currentTrackIdx ? 'active' : ''}" onclick="selectTrack(${i})" id="track-${i}">
+          <div class="track-num">${c.id}</div>
+          <div class="track-content">
+            <div class="track-name">${c.title}</div>
+            <div class="track-desc">${c.subtitle}</div>
           </div>
-          <div class="tele-text" style="font-weight:600; color:var(--text-main);">${track.title}</div>
-          <div style="font-size:0.82rem; color:var(--text-muted); margin-top:6px;">${track.description || ''}</div>
-        `;
-        chapterListContainer.appendChild(card);
-
-        // Transcript item
-        const tele = document.createElement('div');
-        tele.className = `tele-item ${idx === 0 ? 'speaking' : ''}`;
-        tele.id = `tele-${idx}`;
-        tele.onclick = () => loadTrack(idx, true);
-        tele.innerHTML = `
-          <div class="tele-header">
-            <span class="tele-time">第 ${idx + 1} 轨 · ${track.title}</span>
+          <div class="track-meta">
+            ${c.duration}
+            ${i === currentTrackIdx && isPlaying ? '<span class="eq-bars"><span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span></span>' : ''}
           </div>
-          <div class="tele-text">${track.text || track.description || track.title}</div>
-        `;
-        transcriptStream.appendChild(tele);
-      });
+        </div>
+      `).join("");
     }
 
-    renderUI();
-
-    function formatTime(secs) {
-      if (!secs || isNaN(secs)) return '00:00';
-      const m = Math.floor(secs / 60);
-      const s = Math.floor(secs % 60);
-      return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+    function formatTime(s) {
+      if (isNaN(s) || s === Infinity) return "00:00";
+      const m = Math.floor(s / 60);
+      const sec = Math.floor(s % 60);
+      return `${m < 10 ? '0' : ''}${m}:${sec < 10 ? '0' : ''}${sec}`;
     }
 
     function loadTrack(idx, autoPlay = false) {
+      if (idx < 0 || idx >= CHAPTERS.length) return;
       currentTrackIdx = idx;
-      const track = playlist[idx];
-      nowPlayingTitle.innerText = track.title;
-      audio.src = track.src;
-      audio.load();
+      const c = CHAPTERS[idx];
 
-      document.querySelectorAll('.chapter-chip').forEach((c, i) => c.classList.toggle('active', i === idx));
-      document.querySelectorAll('.tele-item').forEach((t, i) => t.classList.toggle('speaking', i === idx));
+      audio.src = c.file;
+      audio.playbackRate = currentSpeed;
 
-      const activeTele = document.getElementById(`tele-${idx}`);
-      if (activeTele) activeTele.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      nowNumEl.innerText = `Track ${idx + 1} of ${CHAPTERS.length}`;
+      nowTitleEl.innerText = c.title;
+      nowSubEl.innerText = c.subtitle;
+      totalDurationEl.innerText = c.duration;
+      progressBar.value = 0;
+      currentTimeEl.innerText = "00:00";
+
+      localStorage.setItem("worlds_i_see_track", idx);
+      renderTracklist();
+
+      const el = document.getElementById(`track-${idx}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
       if (autoPlay) {
-        audio.play().then(() => { playBtn.innerText = '⏸'; }).catch(console.warn);
+        audio.play().then(() => {
+          isPlaying = true;
+          btnPlay.innerText = "⏸";
+          renderTracklist();
+        }).catch(console.warn);
+      }
+    }
+
+    function selectTrack(idx) {
+      if (currentTrackIdx === idx) {
+        togglePlay();
+      } else {
+        loadTrack(idx, true);
       }
     }
 
     function togglePlay() {
       if (audio.paused) {
-        audio.play().then(() => { playBtn.innerText = '⏸'; }).catch(console.warn);
+        audio.play().then(() => {
+          isPlaying = true;
+          btnPlay.innerText = "⏸";
+          renderTracklist();
+        }).catch(err => {
+          console.warn("Playback error:", err);
+        });
       } else {
         audio.pause();
-        playBtn.innerText = '▶';
+        isPlaying = false;
+        btnPlay.innerText = "▶";
+        renderTracklist();
       }
     }
 
-    function skip(secs) {
-      audio.currentTime = Math.max(0, Math.min(audio.duration || 9999, audio.currentTime + secs));
-    }
+    btnPlay.addEventListener("click", togglePlay);
 
-    function onScrub(val) {
-      audio.currentTime = val;
-    }
-
-    function cycleSpeed() {
-      speedIndex = (speedIndex + 1) % speeds.length;
-      const rate = speeds[speedIndex];
-      audio.playbackRate = rate;
-      speedBtn.innerText = `${rate}x`;
-      speedBadge.innerText = `${rate}x 语速`;
-    }
-
-    audio.addEventListener('timeupdate', () => {
-      progressBar.value = audio.currentTime;
-      currTimeElem.innerText = formatTime(audio.currentTime);
+    btnPrev.addEventListener("click", () => {
+      if (currentTrackIdx > 0) loadTrack(currentTrackIdx - 1, true);
     });
 
-    audio.addEventListener('loadedmetadata', () => {
-      progressBar.max = audio.duration;
-      totalTimeElem.innerText = formatTime(audio.duration);
+    btnNext.addEventListener("click", () => {
+      if (currentTrackIdx < CHAPTERS.length - 1) loadTrack(currentTrackIdx + 1, true);
     });
 
-    audio.addEventListener('ended', () => {
-      if (currentTrackIdx < playlist.length - 1) {
+    btnRewind.addEventListener("click", () => {
+      audio.currentTime = Math.max(0, audio.currentTime - 15);
+    });
+
+    btnForward.addEventListener("click", () => {
+      audio.currentTime = Math.min(audio.duration || 9999, audio.currentTime + 15);
+    });
+
+    // Scrubber
+    audio.addEventListener("timeupdate", () => {
+      if (!audio.duration) return;
+      const pct = (audio.currentTime / audio.duration) * 100;
+      progressBar.value = pct;
+      currentTimeEl.innerText = formatTime(audio.currentTime);
+      totalDurationEl.innerText = formatTime(audio.duration);
+    });
+
+    progressBar.addEventListener("input", (e) => {
+      if (!audio.duration) return;
+      audio.currentTime = (e.target.value / 100) * audio.duration;
+    });
+
+    // Auto Advance to next chapter
+    audio.addEventListener("ended", () => {
+      if (sleepTimerMinutes === "chapter") {
+        clearSleepTimer();
+        return;
+      }
+      if (currentTrackIdx < CHAPTERS.length - 1) {
         loadTrack(currentTrackIdx + 1, true);
       } else {
-        playBtn.innerText = '▶';
-        progressBar.value = 0;
+        isPlaying = false;
+        btnPlay.innerText = "▶";
+        renderTracklist();
       }
     });
 
-    function switchTab(tabId, btn) {
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById(`tab-${tabId}`).classList.add('active');
-      btn.classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Speed Controls
+    document.querySelectorAll(".pill").forEach(p => {
+      p.addEventListener("click", (e) => {
+        document.querySelectorAll(".pill").forEach(x => x.classList.remove("active"));
+        e.target.classList.add("active");
+        currentSpeed = parseFloat(e.target.dataset.speed);
+        audio.playbackRate = currentSpeed;
+      });
+    });
+
+    // Theme Toggle
+    btnTheme.addEventListener("click", () => {
+      const cur = document.documentElement.getAttribute("data-theme") || "dark";
+      const nxt = cur === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", nxt);
+      localStorage.setItem("worlds_i_see_theme", nxt);
+    });
+
+    const savedTheme = localStorage.getItem("worlds_i_see_theme");
+    if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+
+    // Sleep Timer
+    const SLEEP_MODES = [0, 15, 30, 45, "chapter"];
+    let sleepIdx = 0;
+
+    btnSleep.addEventListener("click", () => {
+      sleepIdx = (sleepIdx + 1) % SLEEP_MODES.length;
+      const mode = SLEEP_MODES[sleepIdx];
+      clearTimeout(sleepTimerTimeout);
+
+      if (mode === 0) {
+        btnSleep.classList.remove("active");
+        sleepText.innerText = "定时";
+      } else if (mode === "chapter") {
+        btnSleep.classList.add("active");
+        sleepText.innerText = "本章完";
+        sleepTimerMinutes = "chapter";
+      } else {
+        btnSleep.classList.add("active");
+        sleepText.innerText = `${mode}分`;
+        sleepTimerMinutes = mode;
+        sleepTimerTimeout = setTimeout(() => {
+          audio.pause();
+          isPlaying = false;
+          btnPlay.innerText = "▶";
+          renderTracklist();
+          clearSleepTimer();
+        }, mode * 60 * 1000);
+      }
+    });
+
+    function clearSleepTimer() {
+      sleepIdx = 0;
+      clearTimeout(sleepTimerTimeout);
+      btnSleep.classList.remove("active");
+      sleepText.innerText = "定时";
+      sleepTimerMinutes = 0;
     }
+
+    // Init Track
+    const savedTrack = parseInt(localStorage.getItem("worlds_i_see_track") || "0", 10);
+    renderTracklist();
+    loadTrack(savedTrack < CHAPTERS.length ? savedTrack : 0, false);
   </script>
 </body>
 </html>
